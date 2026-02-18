@@ -1,85 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Message Generator</title>
-    <style>
-        body {
-            background: black;
-            color: lime;
-            font-family: monospace;
-            text-align: center;
-            padding: 40px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing Page</title>
 
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
 
-        button {
-            padding: 10px 20px;
-            background: lime;
-            border: none;
-            cursor: pointer;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 
-        img {
-            max-width: 400px;
-            margin-top: 20px;
-        }
-    </style>
+body{
+    background:#000;
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+}
+
+section{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    padding:20px;
+    position:relative;
+}
+
+.hero{
+    background:linear-gradient(135deg,#ff0050,#8f00ff);
+    color:white;
+}
+
+.hero h1{
+    font-size:60px;
+    font-weight:800;
+    animation:fadeUp 1s ease forwards;
+}
+
+.hero p{
+    margin-top:20px;
+    font-size:20px;
+    opacity:0.9;
+}
+
+.btn{
+    margin-top:30px;
+    padding:15px 40px;
+    background:white;
+    color:#000;
+    font-weight:600;
+    border-radius:50px;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.1);
+}
+
+.section2{
+    background:#111;
+    color:white;
+}
+
+.section2 h2{
+    font-size:45px;
+    margin-bottom:20px;
+}
+
+.section3{
+    background:linear-gradient(135deg,#00f2ff,#ff00c8);
+    color:white;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(50px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* Floating button */
+.floating{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#ff0050;
+    color:white;
+    padding:15px 20px;
+    border-radius:50px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(255,0,80,0.6);
+    transition:0.3s;
+}
+
+.floating:hover{
+    transform:scale(1.1);
+}
+</style>
 </head>
+
 <body>
 
-<h2>CREATE YOUR MESSAGE</h2>
+<section class="hero">
+    <h1>Nội Dung Chính Ở Đây</h1>
+    <p>Mô tả giống trong video của bạn</p>
+    <a href="#next" class="btn">Bắt Đầu</a>
+</section>
 
-<div id="creator">
-    <input id="msgInput" placeholder="Nhập lời nhắn"><br>
-    <input id="imgInput" placeholder="Link ảnh (https://...)"><br>
-    <input id="musicInput" placeholder="Link nhạc mp3 (https://...)"><br>
-    <button onclick="generate()">TẠO LINK</button>
-    <p id="generatedLink"></p>
-</div>
+<section class="section2" id="next">
+    <h2>Hiệu Ứng Scroll Mượt</h2>
+    <p>Phần này bạn thay nội dung theo video</p>
+</section>
 
-<div id="viewer" style="display:none;">
-    <h1 id="message"></h1>
-    <img id="image">
-    <audio id="music" controls autoplay></audio>
-</div>
+<section class="section3">
+    <h2>Kêu Gọi Hành Động</h2>
+    <a href="#" class="btn">Đăng Ký Ngay</a>
+</section>
 
-<script>
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.get("msg")) {
-        document.getElementById("creator").style.display = "none";
-        document.getElementById("viewer").style.display = "block";
-
-        document.getElementById("message").innerText = params.get("msg");
-
-        const img = params.get("img");
-        if (img) {
-            document.getElementById("image").src = img;
-        }
-
-        const music = params.get("music");
-        if (music) {
-            document.getElementById("music").src = music;
-        }
-    }
-
-    function generate() {
-        const msg = encodeURIComponent(document.getElementById("msgInput").value);
-        const img = encodeURIComponent(document.getElementById("imgInput").value);
-        const music = encodeURIComponent(document.getElementById("musicInput").value);
-
-        const base = window.location.origin + window.location.pathname;
-        const newLink = base + "?msg=" + msg + "&img=" + img + "&music=" + music;
-
-        document.getElementById("generatedLink").innerHTML =
-            "<a href='" + newLink + "' target='_blank'>" + newLink + "</a>";
-    }
-</script>
+<div class="floating">Chat Ngay</div>
 
 </body>
 </html>
