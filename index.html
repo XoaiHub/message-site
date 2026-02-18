@@ -1,131 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Scene Switch</title>
+    <title>Message Generator</title>
     <style>
         body {
-            margin: 0;
             background: black;
             color: lime;
             font-family: monospace;
-            overflow: hidden;
+            text-align: center;
+            padding: 40px;
         }
 
-        .scene {
-            position: absolute;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        #scene2 {
-            display: none;
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
         }
 
         button {
-            padding: 20px 40px;
-            font-size: 20px;
-            cursor: pointer;
+            padding: 10px 20px;
             background: lime;
             border: none;
+            cursor: pointer;
         }
 
-        #text {
-            font-size: 40px;
+        img {
+            max-width: 400px;
             margin-top: 20px;
-            text-shadow: 0 0 10px lime;
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
         }
     </style>
 </head>
 <body>
 
-<!-- SCENE 1 -->
-<div id="scene1" class="scene">
-    <button onclick="goScene2()">ENTER</button>
+<h2>CREATE YOUR MESSAGE</h2>
+
+<div id="creator">
+    <input id="msgInput" placeholder="Nhập lời nhắn"><br>
+    <input id="imgInput" placeholder="Link ảnh (https://...)"><br>
+    <input id="musicInput" placeholder="Link nhạc mp3 (https://...)"><br>
+    <button onclick="generate()">TẠO LINK</button>
+    <p id="generatedLink"></p>
 </div>
 
-<!-- SCENE 2 -->
-<div id="scene2" class="scene">
-    <canvas id="matrix"></canvas>
-    <div id="text"></div>
+<div id="viewer" style="display:none;">
+    <h1 id="message"></h1>
+    <img id="image">
+    <audio id="music" controls autoplay></audio>
 </div>
-
-<audio id="music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-    function goScene2() {
-        document.getElementById("scene1").style.display = "none";
-        document.getElementById("scene2").style.display = "flex";
-        document.getElementById("music").play();
-        startMatrix();
-        typeEffect();
-    }
-
-    // TYPE EFFECT
     const params = new URLSearchParams(window.location.search);
-    const msg = params.get("msg") || "Welcome!";
-    const textElement = document.getElementById("text");
 
-    function typeEffect() {
-        let index = 0;
-        function type() {
-            if (index < msg.length) {
-                textElement.innerHTML += msg.charAt(index);
-                index++;
-                setTimeout(type, 80);
-            }
+    if (params.get("msg")) {
+        document.getElementById("creator").style.display = "none";
+        document.getElementById("viewer").style.display = "block";
+
+        document.getElementById("message").innerText = params.get("msg");
+
+        const img = params.get("img");
+        if (img) {
+            document.getElementById("image").src = img;
         }
-        type();
+
+        const music = params.get("music");
+        if (music) {
+            document.getElementById("music").src = music;
+        }
     }
 
-    // MATRIX EFFECT
-    function startMatrix() {
-        const canvas = document.getElementById("matrix");
-        const ctx = canvas.getContext("2d");
+    function generate() {
+        const msg = encodeURIComponent(document.getElementById("msgInput").value);
+        const img = encodeURIComponent(document.getElementById("imgInput").value);
+        const music = encodeURIComponent(document.getElementById("musicInput").value);
 
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
+        const base = window.location.origin + window.location.pathname;
+        const newLink = base + "?msg=" + msg + "&img=" + img + "&music=" + music;
 
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-
-        function draw() {
-            ctx.fillStyle = "rgba(0,0,0,0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "lime";
-            ctx.font = fontSize + "px monospace";
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.random() * letters.length);
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
-                    drops[i] = 0;
-
-                drops[i]++;
-            }
-        }
-
-        setInterval(draw, 35);
+        document.getElementById("generatedLink").innerHTML =
+            "<a href='" + newLink + "' target='_blank'>" + newLink + "</a>";
     }
 </script>
 
